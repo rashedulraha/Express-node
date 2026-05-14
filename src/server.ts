@@ -56,7 +56,7 @@ app.get("/user", (req, res) => {
 });
 
 //* post user data
-app.post("/create-user", async (req: Request, res: Response) => {
+app.post("/api/create-user", async (req: Request, res: Response) => {
   // console.log("Hello user data  and request:", req.body);
   const { name, email, password, age } = req.body;
 
@@ -80,6 +80,24 @@ app.post("/create-user", async (req: Request, res: Response) => {
     });
   }
   // console.log(result);
+});
+
+// get user
+app.get("/api/get-all-users", async (req: Request, res: Response) => {
+  try {
+    const result = await pool.query(`
+      SELECT * FROM users`);
+    res.status(200).json({
+      message: "user get successfully",
+      result: result.rows,
+    });
+  } catch (error) {
+    const e = error as Error;
+    res.status(400).json({
+      message: "user get failed",
+      error: e,
+    });
+  }
 });
 
 app.listen(port, () => {
