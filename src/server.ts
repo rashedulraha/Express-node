@@ -98,12 +98,10 @@ app.get("/api/get-user/:id", async (req: Request, res: Response) => {
   // console.log(id);
   try {
     const result = await pool.query(`SELECT * FROM users WHERE id=$1`, [id]);
-    console.log(result);
-    res.json({
-      status: result.rows.length === 0 ? 400 : 200,
+    res.status(result.rows.length === 0 ? 400 : 200).json({
       success: result.rows.length === 0 ? false : true,
       message: result.rows.length === 0 ? "user not found" : "user found",
-      data: result.rows,
+      data: result.rows || [],
     });
   } catch (error) {
     const e = error as Error;
@@ -115,18 +113,22 @@ app.get("/api/get-user/:id", async (req: Request, res: Response) => {
 });
 
 //* patch user by id
-app.patch("/api/update-user/:id", async (req: Request, res: Response) => {
+app.put("/api/update-user/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
+  const { name } = req.body;
+  // console.log(id, name);
+
   try {
-    const result = await pool.query(``);
-    res.json({
-      status: result.rows.length === 0 ? 400 : 200,
-      success: result.rows.length === 0 ? false : true,
+    const result = await pool.query(
+      `UPDATE users SET name=$1 
+           WHERE id=$2`,
+      [name, id],
+    );
+    console.log(result);
+    res.status(result.rowCount === 1 ? 400 : 200).json({
+      success: result.rowCount === 1 ? false : true,
       message:
-        result.rows.length === 0
-          ? "User not found"
-          : "Update user successfully",
-      data: result.rows[0],
+        result.rowCount === 1 ? "User not found" : "User Update successfully",
     });
   } catch (error) {
     const e = error as Error;
