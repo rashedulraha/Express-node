@@ -5,7 +5,7 @@ import express, {
 } from "express";
 
 //* import pg admin
-import { Pool } from "pg";
+import { Pool, Result } from "pg";
 const app: Application = express();
 const port = 3000;
 
@@ -19,27 +19,29 @@ const pool = new Pool({
 });
 
 //* init db
-const initBD = async () => {
+const initDB = async () => {
   try {
     await pool.query(`
-  CREATE TABLE IF NOT EXISTS users (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(50),
-    email VARCHAR(100) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    is_active BOOLEAN DEFAULT true,
-    age INT,
-    created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW()
-  );
-`);
-    console.log("database connected successfully");
+      CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(50) NOT NULL,
+        email VARCHAR(100) NOT NULL UNIQUE,
+        password VARCHAR(255) NOT NULL,
+        is_active BOOLEAN DEFAULT true,
+        age INT,
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
+      );
+    `);
+
+    console.log("Database connected and users table created successfully");
   } catch (error) {
-    console.log(error);
+    const e = error as Error;
+    console.error("Database initialization error:", e.message);
   }
 };
 
-initBD();
+initDB();
 
 //* routeing system
 app.get("/", (req: Request, res: Response) => {
@@ -53,27 +55,31 @@ app.get("/user", (req, res) => {
   });
 });
 
-// post user data
-app.post("/", async (req: Request, res: Response) => {
+//* post user data
+app.post("/create-user", async (req: Request, res: Response) => {
   // console.log("Hello user data  and request:", req.body);
   const { name, email, password, age } = req.body;
-  const result = await pool.query(
-    `
+
+  try {
+    const result = await pool.query(
+      `
     INSERT INTO users(name,email,password,age) VALUES($1,$2,$3,$4)  
     RETURNING *
     `,
-    [name, email, password, age],
-  );
-  console.log(result);
-  res.status(200).json({
-    message: "Created",
-    data: {
-      name,
-      email,
-      password,
-      age,
-    },
-  });
+      [name, email, password, age],
+    );
+    res.status(200).json({
+      message: "user created successfully",
+      result: result.rows[0],
+    });
+  } catch (error) {
+    const e = error as Error;
+    res.status(400).json({
+      message: e.message,
+      error: e,
+    });
+  }
+  // console.log(result);
 });
 
 app.listen(port, () => {
