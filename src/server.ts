@@ -76,16 +76,17 @@ app.get("/api/get-all-users", async (req: Request, res: Response) => {
   try {
     const result = await pool.query(`
       SELECT * FROM users`);
-    res.status(200).json({
-      status: result.rows.length === 0 ? 400 : 200,
+
+    res.status(result.rows.length === 0 ? 400 : 200).json({
       success: result.rows.length === 0 ? false : true,
-      message: "user get successfully",
-      result: result.rows,
+      message:
+        result.rows.length === 0 ? "user not found" : "user get successfully",
+      result: result.rows || [],
     });
   } catch (error) {
     const e = error as Error;
     res.status(400).json({
-      message: "user get failed",
+      message: e.message,
       error: e,
     });
   }
