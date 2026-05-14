@@ -3,7 +3,8 @@ import express, {
   type Request,
   type Response,
 } from "express";
-// import pg admin
+
+//* import pg admin
 import { Pool } from "pg";
 const app: Application = express();
 const port = 3000;
@@ -55,12 +56,22 @@ app.get("/user", (req, res) => {
 // post user data
 app.post("/", async (req: Request, res: Response) => {
   // console.log("Hello user data  and request:", req.body);
-  const { name, price, password } = req.body;
+  const { name, email, password, age } = req.body;
+  const result = await pool.query(
+    `
+    INSERT INTO users(name,email,password,age) VALUES($1,$2,$3,$4)  
+    RETURNING *
+    `,
+    [name, email, password, age],
+  );
+  console.log(result);
   res.status(200).json({
     message: "Created",
     data: {
       name,
-      price,
+      email,
+      password,
+      age,
     },
   });
 });
