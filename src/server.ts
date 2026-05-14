@@ -48,13 +48,6 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Hello World!");
 });
 
-app.get("/user", (req, res) => {
-  res.status(200).json({
-    message: "Hello developer",
-    author: "Programming hero",
-  });
-});
-
 //* post user data
 app.post("/api/create-user", async (req: Request, res: Response) => {
   // console.log("Hello user data  and request:", req.body);
@@ -82,7 +75,7 @@ app.post("/api/create-user", async (req: Request, res: Response) => {
   // console.log(result);
 });
 
-// get user
+//* get user
 app.get("/api/get-all-users", async (req: Request, res: Response) => {
   try {
     const result = await pool.query(`
@@ -95,6 +88,26 @@ app.get("/api/get-all-users", async (req: Request, res: Response) => {
     const e = error as Error;
     res.status(400).json({
       message: "user get failed",
+      error: e,
+    });
+  }
+});
+
+// * user get by id
+app.get("/api/get-user/:id", async (req: Request, res: Response) => {
+  const { id } = req.params;
+  // console.log(id);
+  try {
+    const result = await pool.query(`SELECT * FROM users WHERE id=$1`, [id]);
+    console.log(result);
+    res.json({
+      message: result.rows.length === 0 ? "user not found" : "user found",
+      data: result.rows,
+    });
+  } catch (error) {
+    const e = error as Error;
+    res.json({
+      message: e.message,
       error: e,
     });
   }
