@@ -1,30 +1,23 @@
 import { Router, type Request, type Response } from "express";
 import { pool } from "../../db";
+import { userController } from "./user.controller";
 
 const router = Router();
 
-//* landing route
-router.get("/", (req: Request, res: Response) => {
-  res.json({ success: true, message: "Welcome to the main server" });
-});
-
 //* post user data
-router.post("/", async (req: Request, res: Response) => {
-  // console.log("Hello user data  and request:", req.body);
-  const { name, email, password, age } = req.body;
+router.post("/", userController.createUser);
 
+//* get user //! landing route
+router.get("/", async (req: Request, res: Response) => {
   try {
-    const result = await pool.query(
-      `INSERT INTO users(name,email,password,age) VALUES($1,$2,$3,$4)RETURNING *`,
-      [name, email, password, age],
-    );
+    const result = await pool.query(`
+      SELECT * FROM users`);
+
     res.status(result.rows.length === 0 ? 400 : 200).json({
       success: result.rows.length === 0 ? false : true,
       message:
-        result.rows.length === 0
-          ? "user create failed"
-          : "User create successfully",
-      result: result.rows[0],
+        result.rows.length === 0 ? "user not found" : "user get successfully",
+      result: result.rows || [],
     });
   } catch (error) {
     const e = error as Error;
@@ -33,7 +26,6 @@ router.post("/", async (req: Request, res: Response) => {
       error: e,
     });
   }
-  // console.log(result);
 });
 
 export const userRoute = router;

@@ -15,27 +15,6 @@ app.use(express.json());
 // router using router
 app.use("/api/users", userRoute);
 
-//* get user
-app.get("/api/get-all-users", async (req: Request, res: Response) => {
-  try {
-    const result = await pool.query(`
-      SELECT * FROM users`);
-
-    res.status(result.rows.length === 0 ? 400 : 200).json({
-      success: result.rows.length === 0 ? false : true,
-      message:
-        result.rows.length === 0 ? "user not found" : "user get successfully",
-      result: result.rows || [],
-    });
-  } catch (error) {
-    const e = error as Error;
-    res.status(400).json({
-      message: e.message,
-      error: e,
-    });
-  }
-});
-
 // * user get by id
 app.get("/api/get-user/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
