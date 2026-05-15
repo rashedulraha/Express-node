@@ -20,8 +20,15 @@ const getAllExistingUser = async (): Promise<QueryResult> => {
   return result;
 };
 
+// get single user find by id.
+const getSingleUserFindById = async (id: string) => {
+  const result = await pool.query(`SELECT * FROM users WHERE id=$1`, [id]);
+  return result;
+};
+
 // export all function
 export const userService = {
   createUserIntoDb,
   getAllExistingUser,
+  getSingleUserFindById,
 };

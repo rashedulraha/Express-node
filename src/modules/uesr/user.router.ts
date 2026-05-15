@@ -8,5 +8,7 @@ const router = Router();
 router.post("/", userController.createUser);
 //* get user //! landing route
 router.get("/", userController.getAllExistingUser);
+// * user get by id
+router.get("/:id", userController.getSingleUser);
 
 export const userRoute = router;

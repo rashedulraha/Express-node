@@ -1,4 +1,4 @@
-import type { Request, Response } from "express";
+import { application, type Request, type Response } from "express";
 import { userService } from "./user.service";
 
 //* create new user
@@ -45,7 +45,28 @@ const getAllExistingUser = async (req: Request, res: Response) => {
   }
 };
 
+//* get user find by id
+const getSingleUser = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  // console.log(id);
+  try {
+    const result = await userService.getSingleUserFindById(id as string);
+    res.status(result.rows.length === 0 ? 400 : 200).json({
+      success: result.rows.length === 0 ? false : true,
+      message: result.rows.length === 0 ? "user not found" : "user found",
+      data: result.rows || [],
+    });
+  } catch (error) {
+    const e = error as Error;
+    res.json({
+      message: e.message,
+      error: e,
+    });
+  }
+};
+
 export const userController = {
   createUser,
   getAllExistingUser,
+  getSingleUser,
 };
