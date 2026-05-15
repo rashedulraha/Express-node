@@ -10,5 +10,8 @@ router.post("/", userController.createUser);
 router.get("/", userController.getAllExistingUser);
 // * user get by id
 router.get("/:id", userController.getSingleUser);
+// update existing user
+//* patch user by id
+router.put("/:id", userController.updateExistingUser);
 
 export const userRoute = router;

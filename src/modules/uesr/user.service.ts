@@ -20,15 +20,35 @@ const getAllExistingUser = async (): Promise<QueryResult> => {
   return result;
 };
 
-// get single user find by id.
+//* get single user find by id.
 const getSingleUserFindById = async (id: string) => {
   const result = await pool.query(`SELECT * FROM users WHERE id=$1`, [id]);
   return result;
 };
 
+//* update existing user
+const UpdateExistingUser = async (payload: IUser, id: string) => {
+  const { name, email, password, is_active, age } = payload;
+  const result = await pool.query(
+    `UPDATE users
+    SET
+    name = COALESCE($1, name),
+    email = COALESCE($2, email),
+    password = COALESCE($3, password),
+    is_active = COALESCE($4, is_active),
+    age = COALESCE($5, age),
+    updated_at = NOW()
+        WHERE id = $6
+        RETURNING *;
+  `,
+    [name, email, password, is_active, age, id],
+  );
+  return result;
+};
 // export all function
 export const userService = {
   createUserIntoDb,
   getAllExistingUser,
   getSingleUserFindById,
+  UpdateExistingUser,
 };
