@@ -1,11 +1,7 @@
-import express, {
-  type Application,
-  type Request,
-  type Response,
-} from "express";
+import express, { type Application } from "express";
 
-import { pool } from "./db";
-import { userRoute } from "./modules/uesr/user.router";
+import { userRoute } from "./modules/user/user.router";
+import { profileRoute } from "./modules/profile/profile.router";
 
 export const app: Application = express();
 
@@ -14,3 +10,4 @@ app.use(express.json());
 
 // router using router
 app.use("/api/users", userRoute);
+app.use("/api/user/profile", profileRoute);
