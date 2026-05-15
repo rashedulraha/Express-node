@@ -115,14 +115,23 @@ app.get("/api/get-user/:id", async (req: Request, res: Response) => {
 //* patch user by id
 app.put("/api/update-user/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { name } = req.body;
+  const { name, email, password, is_active, age } = req.body;
   // console.log(id, name);
 
   try {
     const result = await pool.query(
-      `UPDATE users SET name=$1 
-           WHERE id=$2 RETURNING *`,
-      [name, id],
+      `UPDATE users
+    SET
+    name = COALESCE($1, name),
+    email = COALESCE($3, email),
+    password = COALESCE($4, password),
+    is_active = COALESCE($5, is_active),
+    age = COALESCE($6, age),
+    updated_at = NOW()
+        WHERE id = $2
+        RETURNING *;
+  `,
+      [name, id, email, password, is_active, age],
     );
     // console.log(result);
     res.status(result.rows.length === 0 ? 400 : 200).json({
