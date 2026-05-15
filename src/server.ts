@@ -121,14 +121,16 @@ app.put("/api/update-user/:id", async (req: Request, res: Response) => {
   try {
     const result = await pool.query(
       `UPDATE users SET name=$1 
-           WHERE id=$2`,
+           WHERE id=$2 RETURNING *`,
       [name, id],
     );
-    console.log(result);
-    res.status(result.rowCount === 1 ? 400 : 200).json({
-      success: result.rowCount === 1 ? false : true,
+    // console.log(result);
+    res.status(result.rows.length === 0 ? 400 : 200).json({
+      success: result.rows.length === 0 ? false : true,
       message:
-        result.rowCount === 1 ? "User not found" : "User Update successfully",
+        result.rows.length === 0
+          ? "User not found"
+          : "User Update successfully",
     });
   } catch (error) {
     const e = error as Error;
