@@ -4,6 +4,10 @@ import express, {
   type Response,
 } from "express";
 
+// import dotenv
+import dotenv from "dotenv";
+dotenv.config();
+
 //* import pg admin
 import { Pool } from "pg";
 const app: Application = express();
@@ -14,8 +18,7 @@ app.use(express.json());
 
 //* create pool express to postgressql
 const pool = new Pool({
-  connectionString:
-    "postgresql://neondb_owner:npg_r5NlXadOIKn3@ep-nameless-forest-abja3kpt-pooler.eu-west-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require",
+  connectionString: process.env.NEON_DATABASE_CONNECTION_STRING,
 });
 
 //* init db
