@@ -1,5 +1,4 @@
-import { Router, type Request, type Response } from "express";
-import { pool } from "../../db";
+import { Router } from "express";
 import { userController } from "./user.controller";
 
 const router = Router();
@@ -10,8 +9,7 @@ router.post("/", userController.createUser);
 router.get("/", userController.getAllExistingUser);
 // * user get by id
 router.get("/:id", userController.getSingleUser);
-// update existing user
-//* patch user by id
+//* update existing user
 router.put("/:id", userController.updateExistingUser);
 // * delete user id by
 router.delete("/:id", userController.deleteExistingUser);
