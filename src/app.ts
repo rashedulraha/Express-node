@@ -4,21 +4,12 @@ import express, {
   type Response,
 } from "express";
 
-// import dotenv
-import dotenv from "dotenv";
-dotenv.config();
+import { pool } from "./db";
 
-//* import pg admin
-
-import { initDB, pool } from "./db";
-import config from "./config/config";
 export const app: Application = express();
-export const port = config.port;
 
 //* middleware
 app.use(express.json());
-
-initDB();
 
 //* post user data
 app.post("/api/create-user", async (req: Request, res: Response) => {
