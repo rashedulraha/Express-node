@@ -45,10 +45,20 @@ const UpdateExistingUser = async (payload: IUser, id: string) => {
   );
   return result;
 };
+
+//* delete existing user
+const deleteExistingUser = async (id: string) => {
+  const result = await pool.query(
+    `DELETE FROM users WHERE id = $1 RETURNING *`,
+    [id],
+  );
+  return result;
+};
 // export all function
 export const userService = {
   createUserIntoDb,
   getAllExistingUser,
   getSingleUserFindById,
   UpdateExistingUser,
+  deleteExistingUser,
 };

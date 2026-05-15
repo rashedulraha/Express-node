@@ -13,5 +13,7 @@ router.get("/:id", userController.getSingleUser);
 // update existing user
 //* patch user by id
 router.put("/:id", userController.updateExistingUser);
+// * delete user id by
+router.delete("/:id", userController.deleteExistingUser);
 
 export const userRoute = router;
