@@ -1,3 +1,4 @@
+import bcrypt from "bcryptjs";
 import { pool } from "../../db";
 
 const loginUserInToDB = async (payload: {
@@ -5,9 +6,11 @@ const loginUserInToDB = async (payload: {
   password: string;
 }) => {
   const { email, password } = payload;
+  // console.log("email and password:", email, password);
+  // console.log("email and password:", payload);
 
-  // check if the user exist
-  // Compare the password
+  // check if the user exist -> done
+  // Compare the password -> done
   // Generate token
 
   const userData = await pool.query(
@@ -18,9 +21,23 @@ const loginUserInToDB = async (payload: {
   );
 
   if (userData.rows.length === 0) {
-    throw new Error("User not found");
+    throw new Error("Invalid Credential");
   }
-  console.log(userData);
+  const user = userData.rows[0];
+  // console.log(user.password);
+  // console.log(userData);
+
+  const matchPassword = await bcrypt.compare(
+    "43425454tsgfgr3G2GGF#",
+    user.password,
+  );
+  // console.log(user);
+  console.log(matchPassword);
+  // console.log(user.password);
+
+  if (!matchPassword) {
+    throw new Error("Invalid Credential");
+  }
 };
 
 export const authService = {
