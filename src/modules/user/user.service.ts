@@ -16,7 +16,7 @@ const createUserIntoDb = async (payload: IUser) => {
 const getAllExistingUser = async (): Promise<QueryResult> => {
   const result = await pool.query(`
       SELECT * FROM users`);
-  console.log("check result ", result);
+  // console.log("check result ", result);
   return result;
 };
 

@@ -10,4 +10,4 @@ app.use(express.json());
 
 // router using router
 app.use("/api/users", userRoute);
-app.use("/api/user/profile", profileRoute);
+app.use("/api/profile", profileRoute);
