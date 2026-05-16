@@ -1,5 +1,7 @@
 import bcrypt from "bcryptjs";
 import { pool } from "../../db";
+import jwt from "jsonwebtoken";
+import config from "../../config/config";
 
 const loginUserInToDB = async (payload: {
   email: string;
@@ -27,17 +29,31 @@ const loginUserInToDB = async (payload: {
   // console.log(user.password);
   // console.log(userData);
 
-  const matchPassword = await bcrypt.compare(
-    "43425454tsgfgr3G2GGF#",
-    user.password,
-  );
+  const matchPassword = await bcrypt.compare(password, user.password);
   // console.log(user);
-  console.log(matchPassword);
+  // console.log(matchPassword);
   // console.log(user.password);
 
   if (!matchPassword) {
     throw new Error("Invalid Credential");
   }
+
+  // Generate token
+
+  const jwtPayload = {
+    id: user.id,
+    name: user.name,
+    is_active: user.is_active,
+    email: user.email,
+  };
+
+  const accessToken = jwt.sign(jwtPayload, config.JWT_SECRET as string, {
+    expiresIn: "1d",
+  });
+
+  // console.log(accessToken);
+
+  return accessToken;
 };
 
 export const authService = {

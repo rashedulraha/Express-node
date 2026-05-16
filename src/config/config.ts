@@ -7,6 +7,7 @@ dotenv.config({
 const config = {
   connection_string: process.env.NEON_DATABASE_CONNECTION_STRING as string,
   port: process.env.PORT,
+  JWT_SECRET: process.env.JWT_SECRET,
 };
 
 export default config;
