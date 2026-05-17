@@ -1,4 +1,8 @@
-import express, { type Application } from "express";
+import express, {
+  type Application,
+  type Request,
+  type Response,
+} from "express";
 
 import { userRoute } from "./modules/user/user.route";
 import { profileRoute } from "./modules/profile/profile.route";
@@ -8,6 +12,9 @@ export const app: Application = express();
 
 //* middleware
 app.use(express.json());
+app.get("/", (req: Request, res: Response) => {
+  res.json({ message: "Welcome  to our website" });
+});
 
 // router using router
 app.use("/api/users", userRoute);
