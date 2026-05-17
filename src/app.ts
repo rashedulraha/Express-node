@@ -16,7 +16,7 @@ app.get("/", (req: Request, res: Response) => {
   res.json({ message: "Welcome  to our website" });
 });
 
-// router using router
+//* router using router
 app.use("/api/users", userRoute);
 app.use("/api/profile", profileRoute);
 app.use("/api/auth", authController.loginUser);
