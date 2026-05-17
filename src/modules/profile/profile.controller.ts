@@ -21,7 +21,7 @@ const createProfile = async (req: Request, res: Response) => {
   }
 };
 
-// export profile controller
+// export profile controller and control
 export const profileController = {
   createProfile,
 };
