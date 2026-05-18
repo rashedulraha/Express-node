@@ -3,7 +3,7 @@ import jwt, { type JwtPayload } from "jsonwebtoken";
 import config from "../config/config";
 import { pool } from "../db";
 
-export const auth = () => {
+export const auth = (...roles: any) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     // console.log("This is protector route");
     // console.log(req.headers);
@@ -38,9 +38,14 @@ export const auth = () => {
         response(404, "User not found");
       }
 
-      // if the user is active
-      if (!userData.rows[0].is_active) {
-        response(403, "Unauthorized access!!");
+      // if user in active
+      if (!decode.is_active) {
+        response(403, "Forbidden access");
+      }
+
+      //    check user role
+      if (roles.length && !roles.includes(decode.role)) {
+        response(403, "Forbidden access");
       }
 
       // * set user data

@@ -9,7 +9,7 @@ const router = Router();
 //* post user data
 router.post("/", userController.createUser);
 //* get user //! landing route
-router.get("/", auth(), userController.getAllExistingUser);
+router.get("/", auth("admin", "agent"), userController.getAllExistingUser);
 // * user get by id
 router.get("/:id", userController.getSingleUser);
 //* update existing user
