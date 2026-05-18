@@ -37,8 +37,17 @@ export const auth = () => {
       if (userData.rows.length === 0) {
         response(404, "User not found");
       }
+
+      // if the user is active
+      if (!userData.rows[0].is_active) {
+        response(403, "Unauthorized access!!");
+      }
+
+      // * set user data
+      req.user = decode;
       next();
     } catch (error) {
+      next(error);
       const e = error as Error;
       response(401, "Invalid token", e);
     }

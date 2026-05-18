@@ -28,6 +28,8 @@ const createUser = async (req: Request, res: Response) => {
 
 //* get all existing user
 const getAllExistingUser = async (req: Request, res: Response) => {
+  // console.log("User controller", req.user);
+
   try {
     const result = await userService.getAllExistingUser();
     res.status(result.rows.length === 0 ? 400 : 200).json({
