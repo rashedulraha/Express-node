@@ -48,13 +48,23 @@ const loginUserInToDB = async (payload: {
     email: user.email,
   };
 
+  //*  access token generate
   const accessToken = jwt.sign(jwtPayload, config.JWT_SECRET as string, {
     expiresIn: "1d",
   });
 
+  // refresh token generate
+  const refreshToken = jwt.sign(
+    jwtPayload,
+    config.JWT_Refresh_Token_SECRET as string,
+    {
+      expiresIn: "1d",
+    },
+  );
+
   // console.log(accessToken);
 
-  return accessToken;
+  return { accessToken, refreshToken };
 };
 
 export const authService = {
